@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "749751614319",
+    "project_id": "vgram-6772a",
+    "storage_bucket": "vgram-6772a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749751614319:android:cda9ba276c6ab6a79f869a",
+        "android_client_info": {
+          "package_name": "com.example.vgram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749751614319-622dq79tmnta208b49l9solup3e4kqlq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcgY9cI4Auf2cy1HGdUF4zlp608iSpca0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749751614319-622dq79tmnta208b49l9solup3e4kqlq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
