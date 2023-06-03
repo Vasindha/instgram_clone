@@ -41,6 +41,7 @@ class AuthMethods {
             await StorageMethods().storeImage("Profilepics", file, false);
 
         model.user user = model.user(
+          story: [],
             uid: _cred.user!.uid,
             username: username,
             followers: [],

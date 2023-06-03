@@ -12,6 +12,7 @@ import 'package:vgram/utils/image.dart';
 import '../widgets/textField_widget.dart';
 
 class Signuppage extends StatefulWidget {
+  static const routeName = '/signup';
   Signuppage({Key? key}) : super(key: key);
 
   @override
@@ -153,23 +154,13 @@ class _SignuppageState extends State<Signuppage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  InkWell(
-                    child: Container(
-                      child: const Text("have an account?"),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        AuthpageState().isLogin = !AuthpageState().isLogin;
-                      });
+                  Text("Already have an Account!"),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, LoginPage.routeName, (route) => false);
                     },
-                    child: Container(
-                      child: const Text(
-                        "Login.",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      ),
+                    child: Text("Login"),
                   )
                 ],
               )

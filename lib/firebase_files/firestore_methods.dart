@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vgram/firebase_files/storage.dart';
@@ -8,7 +7,7 @@ import 'package:vgram/models/post_model.dart';
 
 class FirestoreMethods {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
   //upload post
 
   Future<String> uploadPost(String username, String des, Uint8List file,
@@ -91,35 +90,45 @@ class FirestoreMethods {
           await _firestore.collection('user').doc(uid).get();
       List following = (snap.data()! as dynamic)['following'];
 
-
       if (following.contains(followid)) {
-        await _firestore
-            .collection('user')
-            .doc(followid)
-            .update({'followers': FieldValue.arrayRemove([uid])});
+        await _firestore.collection('user').doc(followid).update({
+          'followers': FieldValue.arrayRemove([uid])
+        });
 
-             await _firestore
-            .collection('user')
-            .doc(uid)
-            .update({'following': FieldValue.arrayRemove([followid])});
+        await _firestore.collection('user').doc(uid).update({
+          'following': FieldValue.arrayRemove([followid])
+        });
+      } else {
+        await _firestore.collection('user').doc(followid).update({
+          'followers': FieldValue.arrayUnion([uid])
+        });
+
+        await _firestore.collection('user').doc(uid).update({
+          'following': FieldValue.arrayUnion([followid])
+        });
       }
-
-else{
-
-   await _firestore
-            .collection('user')
-            .doc(followid)
-            .update({'followers': FieldValue.arrayUnion([uid])});
-
-             await _firestore
-            .collection('user')
-            .doc(uid)
-            .update({'following': FieldValue.arrayUnion([followid])});
-
-}
-      
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  shareStory({required String url, required String uid}) async {
+    try {
+      String id = Uuid().v1();
+      _firestore.collection('user').doc(uid).update({
+        'story': FieldValue.arrayUnion([
+          {'time': DateTime.now(), 'video': url, 'id': id}
+        ])
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  deleteStory(String id) async {
+    print(id);
+    _firestore.collection('user').doc(_auth.currentUser!.uid).update({
+      'story': FieldValue.arrayRemove([id])
+    });
   }
 }

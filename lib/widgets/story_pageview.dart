@@ -1,120 +1,150 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:story_view/controller/story_controller.dart';
+import 'package:story_view/utils.dart';
+import 'package:story_view/widgets/story_view.dart';
+import 'package:vgram/firebase_files/firestore_methods.dart';
+import 'package:vgram/provider/user_provider.dart';
 import 'package:vgram/widgets/storymodel.dart';
 import 'package:video_player/video_player.dart';
 
+import '../utils/video_player_card.dart';
+
 class Storypageview extends StatefulWidget {
-  Storypageview({Key? key, required this.stories}) : super(key: key);
-  List<Story> stories;
+  Storypageview({Key? key, required this.storySnap}) : super(key: key);
+  final storySnap;
 
   @override
   State<Storypageview> createState() => _StorypageviewState();
 }
 
 class _StorypageviewState extends State<Storypageview> {
-  PageController page = PageController();
-  late VideoPlayerController videoPlayerController;
-  int pageindex = 0;
+  StoryController storyController = StoryController();
+  int i = 0;
+  bool isLoad = false;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    page = PageController();
-    videoPlayerController = VideoPlayerController.network(widget.stories[1].url)
-      ..initialize().then((value) => setState(() {}));
-    videoPlayerController.play();
-  }
+  showDialog1() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Delete Story?"),
+            actions: [
+              InkWell(
+                onTap: () async {
+                  setState(() {
+                    isLoad = true;
+                  });
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    videoPlayerController.dispose();
-    page.dispose();
+                  storyController.pause();
+                  print(widget.storySnap[i]['id']);
+                  await FirestoreMethods()
+                      .deleteStory(widget.storySnap[i]['id']);
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 50,
+                  width: 70,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.red),
+                  child: isLoad
+                      ? Center(child: CircularProgressIndicator())
+                      : Center(child: Text("Delete")),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  height: 50,
+                  width: 70,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.green),
+                  child: Center(child: Text("Cancle")),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    final Story st = widget.stories[pageindex];
+    final user = Provider.of<UserProvider>(context, listen: false).getUser;
     return Scaffold(
-      body: GestureDetector(
-        onTapDown: (details) =>
-            _ontapdown(details, st, widget.stories.length - 1),
-        child: Stack(
-          children: [
-            PageView.builder(
-              onPageChanged: (val) => {
-                if (st.media == MediaType.image)
-                  {
-                    videoPlayerController.pause(),
-                  }
-                else
-                  videoPlayerController.play()
-              },
-              controller: page,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: widget.stories.length,
-              itemBuilder: (context, index) {
-                final story = widget.stories[index];
-                switch (story.media) {
-                  case MediaType.image:
-                    return CachedNetworkImage(
-                      imageUrl: story.url,
-                      fit: BoxFit.cover,
-                    );
-                  case MediaType.video:
-                    if (videoPlayerController != null &&
-                        videoPlayerController.value.isInitialized) {
-                      return FittedBox(
-                        fit: BoxFit.cover,
-                        child: SizedBox(
-                          width: videoPlayerController.value.size.width,
-                          height: videoPlayerController.value.size.height,
-                          child: VideoPlayer(videoPlayerController),
+      body: Stack(
+        children: [
+          StoryView(
+            storyItems: [
+              for (i = 0; i < widget.storySnap.length; i++)
+                StoryItem.pageVideo(
+                  widget.storySnap[i]['video'],
+                  controller: storyController,
+                  duration: Duration(seconds: 15),
+                ),
+            ],
+            controller: storyController,
+            indicatorColor: Colors.blue,
+            onVerticalSwipeComplete: (p0) {
+              if (p0 == Direction.up || p0 == Direction.down) {
+                Navigator.pop(context);
+              }
+            },
+            onComplete: () {
+              Navigator.pop(context);
+            },
+          ),
+          Positioned(
+            top: 35,
+            left: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(user.profile),
+                  ),
+                  Positioned(
+                    bottom: 4,
+                    right: 5,
+                    child: InkWell(
+                      onTap: () {
+                        // chooseVideo();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white)),
+                        child: Icon(
+                          Icons.add,
+                          size: 10,
+                          color: Colors.white,
                         ),
-                      );
-                    }
-                }
-                return const SizedBox.shrink();
-              },
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            top: 35,
+            right: 2,
+            child: IconButton(
+              onPressed: () {
+                showDialog1();
+              },
+              icon: Icon(Icons.more_vert),
+            ),
+          ),
+        ],
       ),
     );
-  }
-
-  void _ontapdown(TapDownDetails details, story, last) {
-    final double screenwidth = MediaQuery.of(context).size.width;
-    final double dx = details.globalPosition.dx;
-    if (pageindex == last) {
-      Navigator.pop(context);
-    }
-    if (dx < screenwidth / 3) {
-      setState(() {
-        if (pageindex - 1 >= 0) {
-          pageindex -= 1;
-        }
-      });
-    } else if (dx > 2 * screenwidth / 3) {
-      setState(() {
-        if (pageindex + 1 < widget.stories.length) {
-          pageindex += 1;
-        } else {
-          pageindex = 0;
-        }
-      });
-    } else {
-      if (story.media == MediaType.video) {
-        if (videoPlayerController.value.isPlaying) {
-          videoPlayerController.pause();
-        } else {
-          videoPlayerController.play();
-        }
-      }
-    }
-    page.animateToPage(pageindex,
-        duration: Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 }

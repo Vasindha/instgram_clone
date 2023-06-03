@@ -1,8 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+
 import 'package:vgram/firebase_files/auth_methods.dart';
 import 'package:vgram/screens/Authpage.dart';
+import 'package:vgram/screens/signup_page.dart';
 
 import 'package:vgram/utils/colors.dart';
 import 'package:vgram/utils/image.dart';
@@ -11,8 +12,8 @@ import 'package:vgram/widgets/textField_widget.dart';
 import '../responsive/layout.dart';
 
 class LoginPage extends StatefulWidget {
+  static const routeName = '/login';
   LoginPage({Key? key}) : super(key: key);
-  
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -51,6 +52,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SafeArea(
           child: Container(
@@ -58,98 +61,66 @@ class _LoginPageState extends State<LoginPage> {
           horizontal: 32,
         ),
         width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              flex: 2,
-              child: Container(),
-            ),
-            //logo
-            //text for emal
-            TextFieldInput(
-                controller: _emailController,
-                hint: "Enter your Email",
-                type: TextInputType.emailAddress),
-            const Gap(24),
-            //text for password
-            TextFieldInput(
-                isPass: true,
-                controller: _passwordController,
-                hint: "Enter your Password",
-                type: TextInputType.text),
-            const Gap(12),
-            //button
-            GestureDetector(
-              onTap: () {
-                login_user();
-              },
-              child: Container(
-                width: double.infinity,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: ShapeDecoration(
-                    color: bluecolor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4))),
-                child: isLoad
-                    ? const Center(
-                        child: CircularProgressIndicator(color: primary),
-                      )
-                    : const Text("Login"),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: size.height * 0.45,
               ),
-            ),
-            Flexible(
-              flex: 2,
-              child: Container(),
-            ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     InkWell(
-            //       // ignore: avoid_unnecessary_containers
-            //       child: Container(
-            //         child: const Text("Don't have an account?"),
-            //       ),
-            //     ),
-            //     GestureDetector(
-            //       onTap: () {
-            //         setState(() {
-            //           print("tap");
-            //           AuthpageState().toggle();
-            //         });
-            //       },
-            //       child: Container(
-            //         child: const Text(
-            //           "Sign up.",
-            //           style: TextStyle(fontWeight: FontWeight.bold),
-            //         ),
-            //       ),
-            //     )
-            //   ],
-            // )
-
-            // RichText(
-            //     text: TextSpan(
-            //         style: TextStyle(
-            //           fontSize: 20,
-            //         ),
-            //         text: 'Have an Account?',
-            //         children: [
-                      
-            //       TextSpan(
-                    
-            //           recognizer: TapGestureRecognizer()
-            //             ..onTap = 
-            //             AuthpageState().toggle,
-                        
-            //           text: 'Sign In',
-            //           style: TextStyle(
-            //             decoration: TextDecoration.underline,
-            //             color: Theme.of(context).colorScheme.secondary,
-            //           ))
-            //     ]))
-          ],
+              TextFieldInput(
+                  controller: _emailController,
+                  hint: "Enter your Email",
+                  type: TextInputType.emailAddress),
+              const SizedBox(
+                height: 20,
+              ),
+              //text for password
+              TextFieldInput(
+                  isPass: true,
+                  controller: _passwordController,
+                  hint: "Enter your Password",
+                  type: TextInputType.text),
+              const SizedBox(
+                height: 20,
+              ),
+              //button
+              GestureDetector(
+                onTap: () {
+                  login_user();
+                },
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: ShapeDecoration(
+                      color: bluecolor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4))),
+                  child: isLoad
+                      ? const Center(
+                          child: CircularProgressIndicator(color: primary),
+                        )
+                      : const Text("Login"),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Text("Not have an Account!"),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, Signuppage.routeName, (route) => false);
+                    },
+                    child: Text("Sign Up"),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       )),
     );

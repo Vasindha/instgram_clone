@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:vgram/screens/signup_page.dart';
 import 'package:vgram/utils/colors.dart';
@@ -115,14 +115,14 @@ class AuthpageState extends State<Authpage> {
                       controller: _emailController,
                       hint: "Enter your Email",
                       type: TextInputType.emailAddress),
-                  const Gap(24),
+
                   //text for password
                   TextFieldInput(
                       isPass: true,
                       controller: _passwordController,
                       hint: "Enter your Password",
                       type: TextInputType.text),
-                  const Gap(12),
+
                   //button
                   GestureDetector(
                     onTap: () {
@@ -197,112 +197,104 @@ class AuthpageState extends State<Authpage> {
             )),
           )
         : Scaffold(
-            body: SingleChildScrollView(
-            child: SafeArea(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                ),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Gap(30),
-                    //logo
-                    //text for emal
-                    Stack(
-                      children: [
-                        imag != null
-                            ? CircleAvatar(
-                                radius: 64,
-                                backgroundImage: MemoryImage(imag!),
+            body: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  //logo
+                  //text for emal
+                  Stack(
+                    children: [
+                      imag != null
+                          ? CircleAvatar(
+                              radius: 64,
+                              backgroundImage: MemoryImage(imag!),
+                            )
+                          : const CircleAvatar(
+                              radius: 64,
+                              backgroundImage: NetworkImage(
+                                  "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80"),
+                            ),
+                      Positioned(
+                          bottom: -10,
+                          left: 80,
+                          child: IconButton(
+                              onPressed: () {
+                                selectImage();
+                              },
+                              icon: const Icon(Icons.add_a_photo)))
+                    ],
+                  ),
+
+                  TextFieldInput(
+                      controller: _user,
+                      hint: "Enter your username",
+                      type: TextInputType.emailAddress),
+
+                  TextFieldInput(
+                      controller: _emailController1,
+                      hint: "Enter your Email",
+                      type: TextInputType.emailAddress),
+
+                  TextFieldInput(
+                      controller: _passwordController1,
+                      isPass: true,
+                      hint: "Enter your Password",
+                      type: TextInputType.emailAddress),
+
+                  //text for password
+                  TextFieldInput(
+                      controller: _bio,
+                      hint: "Enter your bio",
+                      type: TextInputType.text),
+
+                  //button
+                  GestureDetector(
+                    onTap: () {
+                      signup_user();
+                    },
+                    child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: ShapeDecoration(
+                            color: bluecolor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4))),
+                        child: isLoad1
+                            ? Center(
+                                child:
+                                    CircularProgressIndicator(color: primary),
                               )
-                            : const CircleAvatar(
-                                radius: 64,
-                                backgroundImage: NetworkImage(
-                                    "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8&w=1000&q=80"),
-                              ),
-                        Positioned(
-                            bottom: -10,
-                            left: 80,
-                            child: IconButton(
-                                onPressed: () {
-                                  selectImage();
-                                },
-                                icon: const Icon(Icons.add_a_photo)))
-                      ],
-                    ),
-                    const Gap(24),
-                    TextFieldInput(
-                        controller: _user,
-                        hint: "Enter your username",
-                        type: TextInputType.emailAddress),
-                    const Gap(24),
-                    TextFieldInput(
-                        controller: _emailController1,
-                        hint: "Enter your Email",
-                        type: TextInputType.emailAddress),
-                    const Gap(24),
-                    TextFieldInput(
-                        controller: _passwordController1,
-                        isPass: true,
-                        hint: "Enter your Password",
-                        type: TextInputType.emailAddress),
-                    const Gap(24),
-                    //text for password
-                    TextFieldInput(
-                        controller: _bio,
-                        hint: "Enter your bio",
-                        type: TextInputType.text),
-                    const Gap(12),
-                    //button
-                    GestureDetector(
-                      onTap: () {
-                        signup_user();
-                      },
-                      child: Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: ShapeDecoration(
-                              color: bluecolor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4))),
-                          child: isLoad1
-                              ? Center(
-                                  child:
-                                      CircularProgressIndicator(color: primary),
-                                )
-                              : Text("Sign up")),
-                    ),
-                    Gap(40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          child: Container(
-                            child: const Text("have an account?"),
+                            : Text("Sign up")),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        child: Container(
+                          child: const Text("have an account?"),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isLogin = !isLogin;
+                          });
+                        },
+                        child: Container(
+                          child: const Text(
+                            "Login.",
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isLogin = !isLogin;
-                            });
-                          },
-                          child: Container(
-                            child: const Text(
-                              "Login.",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                      )
+                    ],
+                  )
+                ],
               ),
             ),
-          ));
+          );
   }
 }

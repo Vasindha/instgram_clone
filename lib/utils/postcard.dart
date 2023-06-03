@@ -21,6 +21,7 @@ class PostCard extends StatefulWidget {
   State<PostCard> createState() => _PostCardState();
 }
 
+
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
   int commentlength = 0;

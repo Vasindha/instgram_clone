@@ -22,3 +22,9 @@ pikeImage(ImageSource source) async {
 showSnackbar(String content, BuildContext context) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content)));
 }
+
+pickVideo() async {
+  XFile? video = await ImagePicker().pickVideo(
+      source: ImageSource.gallery, maxDuration: Duration(seconds: 15));
+  return video;
+}

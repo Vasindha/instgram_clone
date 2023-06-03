@@ -2,9 +2,9 @@ import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
 import 'package:vgram/firebase_files/firestore_methods.dart';
 import 'package:vgram/models/usermodel.dart';
 import 'package:vgram/provider/user_provider.dart';

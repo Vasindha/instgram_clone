@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:vgram/firebase_options.dart';
 import 'package:vgram/provider/user_provider.dart';
 import 'package:vgram/responsive/layout.dart';
+import 'package:vgram/route.dart';
 import 'package:vgram/screens/Authpage.dart';
 import 'package:vgram/screens/login_screen.dart';
 
@@ -29,29 +30,31 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Instagram',
-          theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: mobilebg),
-          home: StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.active) {
-                if (snapshot.hasData) {
-                  return LayoutPage();
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text("$snapshot.error"),
-                  );
-                }
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(color: primary),
+        debugShowCheckedModeBanner: false,
+        title: 'Instagram',
+        theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: mobilebg),
+        onGenerateRoute: generateRoutes,
+        home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              if (snapshot.hasData) {
+                return LayoutPage();
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text("$snapshot.error"),
                 );
               }
-              return Authpage();
-            },
-          )),
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(color: primary),
+              );
+            }
+            return LoginPage();
+          },
+        ),
+      ),
     );
   }
 }
